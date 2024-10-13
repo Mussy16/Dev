@@ -1,0 +1,51 @@
+
+{% extends 'comp.html' %}
+{% block title %}{{post.title}}|{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-body">
+     <div class="container">
+        <section class="section">
+            {% if post.image %}
+             <figure class="image mb-4">
+                 <img src="{{post.image.url}}">
+            </figure>
+         {% endif %}
+             <div class="columns">
+                <div class="column is-8 is-offset-2">
+                    <div class="content is-medium">
+                        <h2 class="subtitle is-4"> {{post.created_at|timesince}} ago</h2>
+                        <h1 class="title">{{post.title}}</h1>
+                        <p><strong>{{post.intro}}</strong></p>
+                        <p>{{post.body}}</p>
+                        <p><small>Category:&nbsp;<a href="{% url 'category_detail' post.category.slug %}">{{post.category}}</a></small></p>
+                        <hr>
+                        <h2 class="subtitle is-4">Comments</h2>
+                        <div class="container mt-5 box-shadow">
+                            <div class="row">
+                                <form  method="post" action="{% url 'post_detail' category_slug=post.category.slug slug=post.slug %}" >
+                                    {% csrf_token %}
+                                    {{form.as_p}}
+                                    <div class="field mb-3">
+                                        <div class="control d-grid">
+                                            <button class="button is-success">Submit comment</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {% for comment in post.comments.all %}
+                        <article class="media box">
+                            <div class="media-content">
+                                <strong>{{comment.mame}}&nbsp;</strong><small>{{comment.created_at|timesince}} &nbsp; ago</small><br>
+                                {{comment.body}}
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock %}
+
